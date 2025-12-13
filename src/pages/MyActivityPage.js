@@ -2,12 +2,12 @@ import { getDifficultSentences, deleteDifficultSentence, getSavedPassages, delet
 
 export function renderMyActivityPage() {
   return `
-    <div class="my-activity-layout min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div class="my-activity-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
       <!-- 사이드바 메뉴 -->
-      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700">
+      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-[#1e293b] shadow-sm transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800">
         <div class="flex flex-col h-full">
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">메뉴</h3>
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-lg font-black text-[#121417] dark:text-white font-display">메뉴</h3>
             <button id="close-sidebar-btn" class="icon-btn" aria-label="close">
               <span class="material-symbols-outlined">close</span>
             </button>
@@ -32,50 +32,52 @@ export function renderMyActivityPage() {
       </div>
       
       <!-- 사이드바 오버레이 -->
-      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[25] hidden"></div>
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[55] hidden"></div>
 
-      <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-        <button id="menu-btn" class="icon-btn" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">내 활동 기록</h2>
-        <button id="profile-icon-btn" class="icon-btn" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+      <header class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
+        <div class="px-4 sm:px-10 h-full flex items-center justify-between">
+          <button id="menu-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
+          <h2 class="text-lg font-black text-[#121417] dark:text-white font-display">내 활동 기록</h2>
+          <button id="profile-icon-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+        </div>
       </header>
 
-      <div class="flex w-full min-h-[calc(100vh-73px)]">
+      <div class="flex w-full min-h-[calc(100vh-64px)]">
         <!-- 좌측: 학생 정보 패널 (고정 너비) -->
-        <div class="hidden lg:block w-64 flex-shrink-0 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
-          <div class="sticky top-[73px] h-[calc(100vh-73px)] overflow-y-auto">
+        <div class="hidden lg:block w-64 flex-shrink-0 bg-white dark:bg-[#1e293b] border-r border-gray-200 dark:border-gray-800">
+          <div class="sticky top-[64px] h-[calc(100vh-64px)] overflow-y-auto">
             <div class="p-6">
               <div id="student-info-panel" class="space-y-6">
                 <!-- 학생 이름 -->
                 <div class="flex items-start gap-3">
-                  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-xl">person</span>
+                  <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-2xl">badge</span>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">학생 이름</p>
-                    <p id="student-name" class="text-base font-semibold text-gray-900 dark:text-gray-100 truncate">로딩 중...</p>
+                    <p id="student-name" class="text-base font-bold text-[#121417] dark:text-white truncate">로딩 중...</p>
                   </div>
                 </div>
                 
                 <!-- 마지막 접속 -->
-                <div class="flex items-start gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-xl">schedule</span>
+                <div class="flex items-start gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-2xl">access_time</span>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">마지막 접속</p>
-                    <p id="last-access" class="text-base font-medium text-gray-900 dark:text-gray-100">로딩 중...</p>
+                    <p id="last-access" class="text-base font-bold text-[#121417] dark:text-white">로딩 중...</p>
                   </div>
                 </div>
                 
                 <!-- 연속 학습일 -->
-                <div class="flex items-start gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-white text-xl">calendar_month</span>
+                <div class="flex items-start gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
+                  <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-2xl">local_fire_department</span>
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">연속 학습일</p>
-                    <p id="continuous-days" class="text-base font-medium text-gray-900 dark:text-gray-100">로딩 중...</p>
+                    <p id="continuous-days" class="text-base font-bold text-[#121417] dark:text-white">로딩 중...</p>
                   </div>
                 </div>
               </div>
@@ -85,37 +87,37 @@ export function renderMyActivityPage() {
         
         <!-- 우측: 콘텐츠 영역 -->
         <div class="flex-1 min-w-0">
-          <div class="max-w-6xl mx-auto px-6 py-8">
+          <div class="w-full max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- 모바일: 학생 정보 (상단에 표시) -->
-            <div class="lg:hidden mb-6 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm border border-gray-200 dark:border-gray-700">
+            <div class="lg:hidden mb-6 bg-white dark:bg-[#1e293b] rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-800">
               <div class="grid grid-cols-3 gap-4">
                 <div class="text-center">
-                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 mb-2">
-                    <span class="material-symbols-outlined text-white text-lg">person</span>
+                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 mb-2">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-xl">badge</span>
                   </div>
                   <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">학생 이름</p>
-                  <p id="student-name-mobile" class="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">-</p>
+                  <p id="student-name-mobile" class="text-sm font-bold text-[#121417] dark:text-white truncate">-</p>
                 </div>
                 <div class="text-center">
-                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 mb-2">
-                    <span class="material-symbols-outlined text-white text-lg">schedule</span>
+                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 mb-2">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-xl">access_time</span>
                   </div>
                   <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">마지막 접속</p>
-                  <p id="last-access-mobile" class="text-sm font-medium text-gray-900 dark:text-gray-100">-</p>
+                  <p id="last-access-mobile" class="text-sm font-bold text-[#121417] dark:text-white">-</p>
                 </div>
                 <div class="text-center">
-                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mb-2">
-                    <span class="material-symbols-outlined text-white text-lg">calendar_month</span>
+                  <div class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 mb-2">
+                    <span class="material-symbols-outlined text-[#4b91e2] text-xl">local_fire_department</span>
                   </div>
                   <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">연속 학습일</p>
-                  <p id="continuous-days-mobile" class="text-sm font-medium text-gray-900 dark:text-gray-100">-</p>
+                  <p id="continuous-days-mobile" class="text-sm font-bold text-[#121417] dark:text-white">-</p>
                 </div>
               </div>
             </div>
             
         <!-- 탭 네비게이션 -->
         <div class="mb-8">
-          <div class="border-b border-gray-200 dark:border-gray-700">
+          <div class="border-b border-gray-100 dark:border-gray-800">
             <nav class="flex space-x-8">
               <button id="tab-difficult" class="tab-button active py-4 px-1 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-medium">
                 어려운 문장
@@ -367,7 +369,7 @@ function loadDifficultSentences() {
   
   if (sentences.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+      <div class="text-center py-12 bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800">
         <span class="material-symbols-outlined text-gray-400 text-6xl mb-4">inbox</span>
         <p class="text-gray-500 dark:text-gray-400">저장된 어려운 문장이 없습니다.</p>
       </div>
@@ -376,7 +378,7 @@ function loadDifficultSentences() {
   }
 
   container.innerHTML = sentences.map(s => `
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
       <div class="flex items-start justify-between mb-4">
         <div class="flex-1">
           <p class="text-gray-900 dark:text-gray-100 font-medium mb-2">${escapeHtml(s.sentence)}</p>
@@ -411,7 +413,7 @@ function loadSavedPassages() {
   
   if (passages.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+      <div class="text-center py-12 bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800">
         <span class="material-symbols-outlined text-gray-400 text-6xl mb-4">inbox</span>
         <p class="text-gray-500 dark:text-gray-400">저장된 지문이 없습니다.</p>
       </div>
@@ -420,7 +422,7 @@ function loadSavedPassages() {
   }
 
   container.innerHTML = passages.map(p => `
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
       <div class="flex items-start justify-between mb-4">
         <div class="flex-1">
           <div class="mb-3">
@@ -461,7 +463,7 @@ function loadWrongQuestions() {
   
   if (questions.length === 0) {
     container.innerHTML = `
-      <div class="text-center py-12 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+      <div class="text-center py-12 bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800">
         <span class="material-symbols-outlined text-gray-400 text-6xl mb-4">inbox</span>
         <p class="text-gray-500 dark:text-gray-400">저장된 틀린 문제가 없습니다.</p>
       </div>
@@ -470,7 +472,7 @@ function loadWrongQuestions() {
   }
 
   container.innerHTML = questions.map(q => `
-    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+    <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
       <div class="flex items-start justify-between mb-4">
         <div class="flex-1">
           <div class="mb-3">

@@ -3,12 +3,12 @@ import { setupChatbot } from '../utils/chatbotUtils.js';
 
 export function renderInputPage() {
   return `
-    <div class="input-layout min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div class="input-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
       <!-- 사이드바 메뉴 -->
-      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700">
+      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-[#1e293b] shadow-sm transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800">
         <div class="flex flex-col h-full">
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">메뉴</h3>
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-lg font-black text-[#121417] dark:text-white font-display">메뉴</h3>
             <button id="close-sidebar-btn" class="icon-btn" aria-label="close">
               <span class="material-symbols-outlined">close</span>
             </button>
@@ -33,25 +33,34 @@ export function renderInputPage() {
       </div>
       
       <!-- 사이드바 오버레이 -->
-      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[25] hidden"></div>
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[55] hidden"></div>
 
-      <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-        <button id="menu-btn" class="icon-btn" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Passage Analyzer</h2>
-        <button id="profile-icon-btn" class="icon-btn" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+      <header class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
+        <div class="px-4 sm:px-10 h-full flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <button id="menu-btn" class="icon-btn p-2 text-gray-600 dark:text-gray-300" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
+            <div class="flex items-center gap-4 cursor-pointer">
+              <div class="w-8 h-8 text-[#4b91e2] flex items-center justify-center bg-[#4b91e2]/10 rounded-lg">
+                <span class="material-symbols-outlined">school</span>
+              </div>
+              <h2 class="text-lg font-black tracking-tight text-[#121417] dark:text-white font-display">SoolSool</h2>
+            </div>
+          </div>
+          <button id="profile-icon-btn" class="icon-btn p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+        </div>
       </header>
 
       <!-- Main Content with Chatbot -->
-      <div class="flex h-[calc(100vh-73px)] overflow-hidden">
+      <div class="flex h-[calc(100vh-64px)] overflow-hidden">
         <!-- Input Content -->
         <div class="flex-1 overflow-y-auto">
-          <div class="max-w-3xl mx-auto px-6 py-8">
+          <div class="max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div class="input-head mb-6">
-              <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2 tracking-tight">새 지문을 분석해보세요</h1>
-              <p class="text-gray-600 dark:text-gray-400">PDF에서 붙여넣거나 직접 입력하면 바로 문장 구조와 해석을 제공합니다.</p>
+              <h1 class="text-3xl md:text-4xl font-black text-[#121417] dark:text-white mb-2 tracking-tight font-display">새 지문을 분석해보세요</h1>
+              <p class="text-gray-500 dark:text-gray-400 text-base max-w-2xl">PDF에서 붙여넣거나 직접 입력하면 바로 문장 구조와 해석을 제공합니다.</p>
             </div>
 
-            <form id="text-input-form" class="input-form-flat">
+            <form id="text-input-form" class="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8">
               <label class="input-label-row" for="english-text">
                 <span>지문 입력</span>
               </label>
@@ -74,7 +83,7 @@ export function renderInputPage() {
         </div>
 
         <!-- Chatbot Sidebar -->
-        <div id="chatbot-container" class="flex-shrink-0 w-[380px] border-l border-gray-200 dark:border-gray-700"></div>
+        <div id="chatbot-container" class="flex-shrink-0 w-[380px] border-l border-gray-200 dark:border-gray-800"></div>
       </div>
     </div>
   `;

@@ -65,12 +65,12 @@ export function renderExercisePage() {
   }
   
   return `
-    <div class="exercise-layout min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div class="exercise-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
       <!-- 사이드바 메뉴 -->
-      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700">
+      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-[#1e293b] shadow-sm transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800">
         <div class="flex flex-col h-full">
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">메뉴</h3>
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-lg font-black text-[#121417] dark:text-white font-display">메뉴</h3>
             <button id="close-sidebar-btn" class="icon-btn" aria-label="close">
               <span class="material-symbols-outlined">close</span>
             </button>
@@ -95,30 +95,32 @@ export function renderExercisePage() {
       </div>
       
       <!-- 사이드바 오버레이 -->
-      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[25] hidden"></div>
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[55] hidden"></div>
 
       <!-- Top App Bar -->
-      <div class="sticky top-0 z-20 flex items-center justify-between bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-        <div class="flex items-center gap-2">
-          <button id="menu-btn" class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-xl">menu</span>
-          </button>
-          <button id="go-back-btn" class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-xl">arrow_back_ios_new</span>
-          </button>
-        </div>
-        <h2 class="absolute left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight">연습 문제</h2>
-        <div class="flex items-center gap-2">
-          <button id="regenerate-btn" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl transition-all shadow-sm hover:shadow-md">
-            <span class="material-symbols-outlined text-lg">refresh</span>
-            <span class="text-sm font-medium">새 문제 생성</span>
-          </button>
-          <button id="profile-icon-btn" class="icon-btn" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+      <div class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
+        <div class="px-4 sm:px-10 h-full flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <button id="menu-btn" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <button id="go-back-btn" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">arrow_back_ios_new</span>
+            </button>
+          </div>
+          <h2 class="absolute left-1/2 transform -translate-x-1/2 text-lg font-black text-[#121417] dark:text-white tracking-tight font-display">연습 문제</h2>
+          <div class="flex items-center gap-2">
+            <button id="regenerate-btn" class="flex items-center gap-2 h-10 px-4 rounded-lg bg-[#4b91e2] hover:bg-blue-600 text-white text-sm font-bold shadow-md transition-colors">
+              <span class="material-symbols-outlined text-[20px]">refresh</span>
+              <span>새 문제 생성</span>
+            </button>
+            <button id="profile-icon-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+          </div>
         </div>
       </div>
 
       <!-- Main Content Area with Chatbot -->
-      <div class="flex h-[calc(100vh-73px)] overflow-hidden">
+      <div class="flex h-[calc(100vh-64px)] overflow-hidden">
         <!-- Exercise Content -->
         <div class="flex-1 overflow-y-auto">
           <div class="max-w-4xl mx-auto px-6 py-8">

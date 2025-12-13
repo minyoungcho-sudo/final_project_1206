@@ -2,18 +2,20 @@ import { getAvailableDates, getUsersByDate, getUserData } from '../utils/adminDa
 
 export function renderAdminPage() {
   return `
-    <div class="admin-layout min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <header class="sticky top-0 z-20 flex items-center justify-between px-6 py-4 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-        <button class="icon-btn" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">관리자 페이지</h2>
-        <button id="profile-icon-btn" class="icon-btn" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+    <div class="admin-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
+      <header class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
+        <div class="px-4 sm:px-10 h-full flex items-center justify-between">
+          <button class="p-2 text-gray-600 dark:text-gray-300" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
+          <h2 class="text-lg font-black text-[#121417] dark:text-white font-display">관리자 페이지</h2>
+          <button id="profile-icon-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+        </div>
       </header>
 
-      <div class="flex h-[calc(100vh-73px)] overflow-hidden">
+      <div class="flex h-[calc(100vh-64px)] overflow-hidden">
         <!-- 좌측 사이드바: 날짜 선택 및 사용자 목록 -->
-        <div class="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+        <div class="w-80 bg-white dark:bg-[#1e293b] border-r border-gray-100 dark:border-gray-800 flex flex-col">
           <!-- 날짜 선택 섹션 -->
-          <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="p-4 border-b border-gray-100 dark:border-gray-800">
             <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">날짜 선택</h3>
             <select id="date-select" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="">날짜를 선택하세요</option>
@@ -119,7 +121,7 @@ function loadUsersByDate(date) {
     
     return `
       <button 
-        class="user-item w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+        class="user-item w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         data-user-id="${user.userId}"
       >
         <div class="flex items-center justify-between">
@@ -188,7 +190,7 @@ function loadUserDetail(userId, date) {
   container.innerHTML = `
     <div class="space-y-6">
       <!-- 사용자 헤더 -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+      <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
         <div class="flex items-center gap-4">
           <div class="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
             ${escapeHtml(userData.userName.charAt(0).toUpperCase())}
@@ -202,7 +204,7 @@ function loadUserDetail(userId, date) {
 
       <!-- 어려운 문장 섹션 -->
       ${difficultSentences.length > 0 ? `
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-blue-600 dark:text-blue-400">bookmark</span>
             어려운 문장 (${difficultSentences.length})
@@ -222,7 +224,7 @@ function loadUserDetail(userId, date) {
 
       <!-- 저장한 지문 섹션 -->
       ${savedPassages.length > 0 ? `
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-green-600 dark:text-green-400">description</span>
             저장한 지문 (${savedPassages.length})
@@ -248,7 +250,7 @@ function loadUserDetail(userId, date) {
 
       <!-- 틀린 문제 섹션 -->
       ${wrongQuestions.length > 0 ? `
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800">
           <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-red-600 dark:text-red-400">quiz</span>
             틀린 문제 (${wrongQuestions.length})
@@ -288,7 +290,7 @@ function loadUserDetail(userId, date) {
       ` : ''}
 
       ${difficultSentences.length === 0 && savedPassages.length === 0 && wrongQuestions.length === 0 ? `
-        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 text-center">
+        <div class="bg-white dark:bg-[#1e293b] rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-800 text-center">
           <p class="text-gray-500 dark:text-gray-400">선택한 날짜에 활동 데이터가 없습니다.</p>
         </div>
       ` : ''}

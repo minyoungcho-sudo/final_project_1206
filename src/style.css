@@ -188,15 +188,16 @@ h1 {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4b91e2 0%, #667eea 100%);
+  background: #4b91e2;
   color: white;
-  box-shadow: 0 4px 12px rgba(75, 145, 226, 0.3);
-  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-weight: 700;
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(75, 145, 226, 0.4);
+  background: #3b7bc8;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary {

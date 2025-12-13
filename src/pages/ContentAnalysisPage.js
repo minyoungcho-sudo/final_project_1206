@@ -1,7 +1,7 @@
 import { analyzeContentWithGPT } from '../utils/gptApi.js';
 import { renderChatbot } from '../components/Chatbot.js';
 import { setupChatbot } from '../utils/chatbotUtils.js';
-import { savePassage } from '../utils/activityStorage.js';
+import { savePassage, getSavedPassages, deleteSavedPassage } from '../utils/activityStorage.js';
 
 export function renderContentAnalysisPage() {
   const text = window.appState?.inputText || '';
@@ -20,12 +20,12 @@ export function renderContentAnalysisPage() {
   }
   
   return `
-    <div class="content-analysis-layout min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div class="content-analysis-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
       <!-- 사이드바 메뉴 -->
-      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-30 w-64 bg-white dark:bg-gray-800 shadow-xl transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-700">
+      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-[#1e293b] shadow-sm transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800">
         <div class="flex flex-col h-full">
-          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">메뉴</h3>
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-lg font-black text-[#121417] dark:text-white font-display">메뉴</h3>
             <button id="close-sidebar-btn" class="icon-btn" aria-label="close">
               <span class="material-symbols-outlined">close</span>
             </button>
@@ -50,39 +50,41 @@ export function renderContentAnalysisPage() {
       </div>
       
       <!-- 사이드바 오버레이 -->
-      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[25] hidden"></div>
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[55] hidden"></div>
 
       <!-- Top App Bar -->
-      <div class="sticky top-0 z-20 flex items-center justify-between bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl px-6 py-4 border-b border-gray-200/50 dark:border-gray-700/50 shadow-sm">
-        <div class="flex items-center gap-2">
-          <button id="menu-btn" class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-xl">menu</span>
-          </button>
-          <button id="go-back-btn" class="flex items-center justify-center w-10 h-10 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
-            <span class="material-symbols-outlined text-xl">arrow_back_ios_new</span>
-          </button>
-        </div>
-        <h2 class="absolute left-1/2 transform -translate-x-1/2 text-xl font-semibold text-gray-900 dark:text-gray-100 tracking-tight">지문 주제 및 내용 분석</h2>
-        <div class="flex items-center gap-2">
-          <button id="save-passage-btn" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl transition-all shadow-sm hover:shadow-md">
-            <span class="material-symbols-outlined text-lg">bookmark_add</span>
-            <span class="text-sm font-medium">지문 저장</span>
-          </button>
-          <button id="next-page-btn" class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl transition-all shadow-sm hover:shadow-md">
-            <span class="text-sm font-medium">연습 문제</span>
-            <span class="material-symbols-outlined text-lg">arrow_forward_ios</span>
-          </button>
-          <button id="profile-icon-btn" class="icon-btn" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+      <div class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
+        <div class="px-4 sm:px-10 h-full flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <button id="menu-btn" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">menu</span>
+            </button>
+            <button id="go-back-btn" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors">
+              <span class="material-symbols-outlined">arrow_back_ios_new</span>
+            </button>
+          </div>
+          <h2 class="absolute left-1/2 transform -translate-x-1/2 text-lg font-black text-[#121417] dark:text-white tracking-tight font-display">지문 주제 및 내용 분석</h2>
+          <div class="flex items-center gap-2">
+            <button id="save-passage-btn" class="flex items-center gap-2 h-10 px-4 rounded-lg bg-[#4b91e2] hover:bg-blue-600 text-white text-sm font-bold shadow-md transition-colors">
+              <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+              <span>지문 저장</span>
+            </button>
+            <button id="next-page-btn" class="flex items-center gap-2 h-10 px-4 rounded-lg bg-[#4b91e2] hover:bg-blue-600 text-white text-sm font-bold shadow-md transition-colors">
+              <span>연습 문제</span>
+              <span class="material-symbols-outlined text-[20px]">arrow_forward_ios</span>
+            </button>
+            <button id="profile-icon-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
+          </div>
         </div>
       </div>
 
       <!-- Main Content Area with Chatbot -->
-      <div class="flex h-[calc(100vh-73px)] overflow-hidden">
+      <div class="flex h-[calc(100vh-64px)] overflow-hidden">
         <!-- Content Analysis -->
         <div class="flex-1 overflow-y-auto">
-          <div class="max-w-4xl mx-auto px-6 py-8">
+          <div class="w-full max-w-[1024px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- Loading Indicator -->
-            <div id="loading-indicator" class="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl text-center border border-blue-100 dark:border-blue-800 shadow-sm">
+            <div id="loading-indicator" class="mb-8 p-6 bg-white dark:bg-[#1e293b] rounded-2xl text-center border border-gray-100 dark:border-gray-800 shadow-sm">
               <div class="flex items-center justify-center gap-3">
                 <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 dark:border-blue-400"></div>
                 <p class="text-blue-700 dark:text-blue-300 font-medium">지문 분석 중... 잠시만 기다려주세요.</p>
@@ -92,17 +94,19 @@ export function renderContentAnalysisPage() {
             <!-- Analysis Cards Container -->
             <div id="content-analysis-container" class="space-y-6">
               <!-- 주제 카드 -->
-              <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border border-gray-100/50 dark:border-gray-700/50">
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-600 dark:to-indigo-700 flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-white text-xl">lightbulb</span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">지문 주제</h3>
-                    <div id="main-idea" class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <div class="flex items-center gap-2 text-gray-400">
-                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                        <span class="text-sm">분석 중...</span>
+              <div class="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div class="p-6 md:p-8">
+                  <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[#4b91e2] text-2xl">auto_awesome</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-bold text-[#121417] dark:text-white mb-3">지문 주제</h3>
+                      <div id="main-idea" class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">
+                        <div class="flex items-center gap-2 text-gray-400">
+                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                          <span class="text-sm">분석 중...</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -110,17 +114,19 @@ export function renderContentAnalysisPage() {
               </div>
 
               <!-- 전개 방식 카드 -->
-              <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border border-gray-100/50 dark:border-gray-700/50">
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 dark:from-purple-600 dark:to-pink-700 flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-white text-xl">account_tree</span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">글의 전개 방식</h3>
-                    <div id="development-pattern" class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <div class="flex items-center gap-2 text-gray-400">
-                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                        <span class="text-sm">분석 중...</span>
+              <div class="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div class="p-6 md:p-8">
+                  <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[#4b91e2] text-2xl">schema</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-bold text-[#121417] dark:text-white mb-3">글의 전개 방식</h3>
+                      <div id="development-pattern" class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">
+                        <div class="flex items-center gap-2 text-gray-400">
+                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                          <span class="text-sm">분석 중...</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -128,17 +134,19 @@ export function renderContentAnalysisPage() {
               </div>
 
               <!-- 핵심 키워드 카드 -->
-              <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border border-gray-100/50 dark:border-gray-700/50">
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 dark:from-amber-600 dark:to-orange-700 flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-white text-xl">tag</span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">핵심 키워드</h3>
-                    <div id="key-keywords" class="flex flex-wrap gap-2">
-                      <div class="flex items-center gap-2 text-gray-400">
-                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                        <span class="text-sm">분석 중...</span>
+              <div class="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div class="p-6 md:p-8">
+                  <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[#4b91e2] text-2xl">sell</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-bold text-[#121417] dark:text-white mb-3">핵심 키워드</h3>
+                      <div id="key-keywords" class="flex flex-wrap gap-2">
+                        <div class="flex items-center gap-2 text-gray-400">
+                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                          <span class="text-sm">분석 중...</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -146,17 +154,19 @@ export function renderContentAnalysisPage() {
               </div>
 
               <!-- 주제문 위치 카드 -->
-              <div class="bg-white dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-2xl shadow-md border border-gray-100/50 dark:border-gray-700/50">
-                <div class="flex items-start gap-4">
-                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700 flex items-center justify-center shadow-sm">
-                    <span class="material-symbols-outlined text-white text-xl">location_on</span>
-                  </div>
-                  <div class="flex-1">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">주제문 위치</h3>
-                    <div id="topic-sentence-location" class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      <div class="flex items-center gap-2 text-gray-400">
-                        <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
-                        <span class="text-sm">분석 중...</span>
+              <div class="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden hover:shadow-md transition-shadow duration-300">
+                <div class="p-6 md:p-8">
+                  <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 flex items-center justify-center">
+                      <span class="material-symbols-outlined text-[#4b91e2] text-2xl">pin_drop</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <h3 class="text-base font-bold text-[#121417] dark:text-white mb-3">주제문 위치</h3>
+                      <div id="topic-sentence-location" class="text-gray-700 dark:text-gray-300 leading-relaxed text-sm">
+                        <div class="flex items-center gap-2 text-gray-400">
+                          <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-400"></div>
+                          <span class="text-sm">분석 중...</span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -167,7 +177,7 @@ export function renderContentAnalysisPage() {
         </div>
 
         <!-- Chatbot Sidebar -->
-        <div id="chatbot-container" class="flex-shrink-0 w-[380px] border-l border-gray-200 dark:border-gray-700"></div>
+        <div id="chatbot-container" class="flex-shrink-0 w-[380px] border-l border-gray-200 dark:border-gray-800"></div>
       </div>
     </div>
   `;
@@ -267,9 +277,24 @@ export async function setupContentAnalysisPage() {
     });
   }
 
-  // 지문 저장 버튼 이벤트
+  // 지문 저장 버튼 이벤트 (토글 방식)
   const savePassageBtn = document.getElementById('save-passage-btn');
   if (savePassageBtn) {
+    // 현재 지문이 이미 저장되어 있는지 확인
+    const text = window.appState?.inputText || '';
+    const savedPassages = getSavedPassages();
+    const existingPassage = savedPassages.find(p => p.passage === text);
+    
+    if (existingPassage) {
+      // 이미 저장된 경우
+      savePassageBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[20px]">bookmark</span>
+        <span>저장 취소</span>
+      `;
+      savePassageBtn.setAttribute('data-saved-id', existingPassage.id);
+      savePassageBtn.setAttribute('data-saved', 'true');
+    }
+    
     savePassageBtn.addEventListener('click', () => {
       const text = window.appState?.inputText || '';
       if (!text) {
@@ -277,20 +302,36 @@ export async function setupContentAnalysisPage() {
         return;
       }
       
-      // 분석 결과 가져오기
-      const contentAnalysis = window.contentAnalysisData;
-      if (contentAnalysis) {
-        savePassage(text, contentAnalysis);
-        savePassageBtn.innerHTML = `
-          <span class="material-symbols-outlined text-lg">bookmark</span>
-          <span class="text-sm font-medium">저장됨</span>
-        `;
-        savePassageBtn.disabled = true;
-        savePassageBtn.classList.remove('from-green-600', 'to-emerald-600', 'hover:from-green-700', 'hover:to-emerald-700');
-        savePassageBtn.classList.add('from-gray-500', 'to-gray-600');
-        showToast('지문이 저장되었습니다.');
+      const isSaved = savePassageBtn.getAttribute('data-saved') === 'true';
+      
+      if (isSaved) {
+        // 저장 취소 (삭제)
+        const savedId = savePassageBtn.getAttribute('data-saved-id');
+        if (savedId) {
+          deleteSavedPassage(savedId);
+          savePassageBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+            <span>지문 저장</span>
+          `;
+          savePassageBtn.removeAttribute('data-saved-id');
+          savePassageBtn.removeAttribute('data-saved');
+          showToast('지문 저장이 취소되었습니다.');
+        }
       } else {
-        alert('분석이 완료된 후 저장할 수 있습니다.');
+        // 저장하기
+        const contentAnalysis = window.contentAnalysisData;
+        if (contentAnalysis) {
+          const savedEntry = savePassage(text, contentAnalysis);
+          savePassageBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[20px]">bookmark</span>
+            <span>저장 취소</span>
+          `;
+          savePassageBtn.setAttribute('data-saved-id', savedEntry.id);
+          savePassageBtn.setAttribute('data-saved', 'true');
+          showToast('지문이 저장되었습니다.');
+        } else {
+          alert('분석이 완료된 후 저장할 수 있습니다.');
+        }
       }
     });
   }
@@ -336,18 +377,18 @@ function showToast(message) {
 
     // 주제 업데이트
     if (mainIdeaElement) {
-      mainIdeaElement.innerHTML = `<p class="text-base">${analysis.mainIdea || '분석 결과를 가져올 수 없습니다.'}</p>`;
+      mainIdeaElement.innerHTML = `<p class="text-sm leading-relaxed">${escapeHtml(analysis.mainIdea || '분석 결과를 가져올 수 없습니다.')}</p>`;
     }
 
     // 전개 방식 업데이트
     if (developmentPatternElement) {
-      developmentPatternElement.innerHTML = `<p class="text-base">${analysis.developmentPattern || '분석 결과를 가져올 수 없습니다.'}</p>`;
+      developmentPatternElement.innerHTML = `<p class="text-sm leading-relaxed">${escapeHtml(analysis.developmentPattern || '분석 결과를 가져올 수 없습니다.')}</p>`;
     }
 
     // 핵심 키워드 업데이트
     if (keyKeywordsElement && analysis.keyKeywords && analysis.keyKeywords.length > 0) {
       keyKeywordsElement.innerHTML = analysis.keyKeywords.map(keyword => 
-        `<span class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 text-amber-800 dark:text-amber-200 font-medium text-sm border border-amber-200 dark:border-amber-800/50 shadow-sm">${escapeHtml(keyword)}</span>`
+        `<span class="inline-flex items-center px-3 py-1.5 rounded-lg bg-[#4b91e2]/10 dark:bg-[#4b91e2]/20 text-[#4b91e2] font-medium text-xs border border-[#4b91e2]/20">${escapeHtml(keyword)}</span>`
       ).join('');
     } else if (keyKeywordsElement) {
       keyKeywordsElement.innerHTML = '<p class="text-gray-400 text-sm">키워드를 찾을 수 없습니다.</p>';
@@ -355,7 +396,7 @@ function showToast(message) {
 
     // 주제문 위치 업데이트
     if (topicSentenceLocationElement) {
-      topicSentenceLocationElement.innerHTML = `<p class="text-base">${analysis.topicSentenceLocation || '분석 결과를 가져올 수 없습니다.'}</p>`;
+      topicSentenceLocationElement.innerHTML = `<p class="text-sm leading-relaxed">${escapeHtml(analysis.topicSentenceLocation || '분석 결과를 가져올 수 없습니다.')}</p>`;
     }
 
     // 로딩 인디케이터 숨기기
