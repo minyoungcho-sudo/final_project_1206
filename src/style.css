@@ -1,0 +1,492 @@
+:root {
+  font-family: 'Inter', 'Lexend', system-ui, -apple-system, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #213547;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #f6f7f8;
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+/* 입력/페이지 기본 레이아웃 */
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+h1 {
+  font-size: 2.5em;
+  line-height: 1.2;
+  margin: 0;
+  color: #1a1a1a;
+}
+
+.page-description {
+  color: #666;
+  font-size: 1.1em;
+  margin-bottom: 2rem;
+}
+
+/* 입력/분석/내용분석/연습문제 페이지 레이아웃 */
+.input-layout,
+.analysis-layout,
+.content-analysis-layout,
+.exercise-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.dark .icon-btn:hover {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+.input-head {
+  margin-bottom: 24px;
+}
+
+.input-form-flat {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.input-label-row {
+  display: block;
+  margin-bottom: 12px;
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.dark .input-label-row {
+  color: #d1d5db;
+}
+
+.textarea-large {
+  width: 100%;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  font-family: 'Inter', 'Lexend', system-ui, -apple-system, sans-serif;
+  background: #fff;
+  transition: all 0.2s;
+  min-height: 320px;
+  resize: vertical;
+  color: #111827;
+}
+
+.textarea-large:focus {
+  outline: none;
+  border-color: #4b91e2;
+  box-shadow: 0 0 0 4px rgba(75, 145, 226, 0.1);
+}
+
+.textarea-large::placeholder {
+  color: #9ca3af;
+}
+
+.input-meta {
+  display: flex;
+  justify-content: flex-end;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin: 12px 4px 20px;
+}
+
+.muted {
+  color: #9ca3af;
+}
+
+.cta-sticky {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 0 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.9) 60%, rgba(255,255,255,1) 100%);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 10;
+}
+
+.dark .cta-sticky {
+  background: linear-gradient(180deg, rgba(17,24,39,0) 0%, rgba(17,24,39,0.9) 60%, rgba(17,24,39,1) 100%);
+}
+
+/* 버튼 */
+.btn-primary,
+.btn-secondary {
+  border-radius: 8px;
+  border: none;
+  padding: 0.8em 2em;
+  font-size: 1.1em;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #4b91e2 0%, #667eea 100%);
+  color: white;
+  box-shadow: 0 4px 12px rgba(75, 145, 226, 0.3);
+  border-radius: 12px;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(75, 145, 226, 0.4);
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.btn-secondary:hover {
+  background: #e8e8e8;
+  border-color: #bbb;
+}
+
+/* 분석 페이지 */
+.analysis-container {
+  text-align: left;
+}
+
+.sentence-analysis {
+  background: #f9f9f9;
+  border-left: 4px solid #667eea;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sentence-analysis:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-header {
+  margin-bottom: 1rem;
+}
+
+.sentence-number {
+  display: inline-block;
+  background: #667eea;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+.sentence-original {
+  font-size: 1.2em;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+}
+
+.sentence-structure,
+.sentence-translation,
+.sentence-grammar {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 6px;
+  line-height: 1.8;
+}
+
+.sentence-structure strong,
+.sentence-translation strong,
+.sentence-grammar strong {
+  color: #667eea;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.sentence-grammar ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.sentence-grammar li {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+/* Material Icons */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 24px;
+  user-select: none;
+}
+
+/* 문법 요소 강조 스타일 - 고급스러운 디자인 */
+.grammar-subject { 
+  color: #4A90E2; 
+  font-weight: 500; 
+}
+
+.grammar-verb { 
+  color: #D0021B; 
+  font-weight: 500; 
+}
+
+.grammar-participial { 
+  color: #F5A623; 
+  font-weight: 500; 
+}
+
+/* 절 구분 스타일 */
+.grammar-clause {
+  border-left: 2px solid #9E9E9E;
+  padding-left: 8px;
+  margin: 4px 0;
+}
+
+/* 로딩 인디케이터 */
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+  background: #f0f0f0;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.loading-indicator p {
+  color: #666;
+  font-size: 1.1em;
+}
+
+.translation-placeholder {
+  color: #999;
+  font-style: italic;
+}
+
+/* Compact Legend */
+/* 챗봇 스타일 */
+#chat-messages {
+  scroll-behavior: smooth;
+}
+
+#chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chat-messages::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+#chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (max-width: 1024px) {
+  #chatbot-container {
+    display: none !important;
+  }
+  
+  .input-layout .flex,
+  .analysis-layout .flex {
+    flex-direction: column;
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  #app {
+    padding: 1rem;
+  }
+
+  .page-content {
+    padding: 1.5rem;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .sentence-original {
+    font-size: 1em;
+  }
+}
+
+/* 연습문제 페이지 스타일 */
+.category-btn.selected {
+  transform: scale(1.02);
+}
+
+.category-btn.border-blue-500,
+.category-btn.border-purple-500,
+.category-btn.border-amber-500 {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 인증 관련 스타일 */
+#login-screen {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+#app {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 역할 선택 버튼 스타일 */
+.role-select-btn {
+  border-color: #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.dark .role-select-btn {
+  border-color: #4b5563;
+  background: #1f2937;
+  color: #d1d5db;
+}
+
+.role-select-btn:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.dark .role-select-btn:hover {
+  border-color: #60a5fa;
+  background: #1e3a8a;
+}
+
+.role-select-btn.selected {
+  border-color: #3b82f6;
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.dark .role-select-btn.selected {
+  border-color: #60a5fa;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* 프로필 드롭다운 메뉴 스타일 */
+#profile-dropdown {
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 프로필 아이콘 버튼 */
+#profile-icon-btn {
+  position: relative;
+}
+
+#profile-icon-btn.active {
+  background: #eff6ff;
+}
+
+.dark #profile-icon-btn.active {
+  background: #1e3a8a;
+}
