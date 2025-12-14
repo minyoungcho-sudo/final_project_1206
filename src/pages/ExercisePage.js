@@ -89,6 +89,12 @@ export function renderExercisePage() {
                   <span>내 활동 기록</span>
                 </button>
               </li>
+              <li>
+                <button id="menu-item-community" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span class="material-symbols-outlined">forum</span>
+                  <span>커뮤니티</span>
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
@@ -262,6 +268,18 @@ export async function setupExercisePage() {
       }
       if (window.navigateToPage) {
         window.navigateToPage('myactivity');
+      }
+    });
+  }
+
+  const menuItemCommunity = document.getElementById('menu-item-community');
+  if (menuItemCommunity) {
+    menuItemCommunity.addEventListener('click', () => {
+      if (window.toggleSidebar) {
+        window.toggleSidebar();
+      }
+      if (window.navigateToPage) {
+        window.navigateToPage('community');
       }
     });
   }

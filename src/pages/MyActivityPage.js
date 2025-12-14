@@ -26,6 +26,12 @@ export function renderMyActivityPage() {
                   <span>내 활동 기록</span>
                 </button>
               </li>
+              <li>
+                <button id="menu-item-community" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span class="material-symbols-outlined">forum</span>
+                  <span>커뮤니티</span>
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
@@ -239,6 +245,18 @@ export function setupMyActivityPage() {
   const menuItemActivity = document.getElementById('menu-item-activity');
   if (menuItemActivity) {
     // 이미 활동 기록 페이지에 있으므로 아무 동작 안 함
+  }
+
+  const menuItemCommunity = document.getElementById('menu-item-community');
+  if (menuItemCommunity) {
+    menuItemCommunity.addEventListener('click', () => {
+      if (window.toggleSidebar) {
+        window.toggleSidebar();
+      }
+      if (window.navigateToPage) {
+        window.navigateToPage('community');
+      }
+    });
   }
 
   // 사이드바 닫기 버튼

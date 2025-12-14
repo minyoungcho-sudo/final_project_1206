@@ -44,12 +44,17 @@ export function getAllUsersActivityData() {
   const currentUserId = localStorage.getItem('currentUserId') || 'current';
   const currentUserName = localStorage.getItem('currentUserName') || '현재 사용자';
   
+  // 현재 사용자의 데이터 (모든 데이터를 가져온 후 필터링)
+  const allDifficultSentences = JSON.parse(localStorage.getItem('difficult_sentences') || '[]');
+  const allSavedPassages = JSON.parse(localStorage.getItem('saved_passages') || '[]');
+  const allWrongQuestions = JSON.parse(localStorage.getItem('wrong_questions') || '[]');
+  
   users.push({
     userId: currentUserId,
     userName: currentUserName,
-    difficultSentences: JSON.parse(localStorage.getItem('difficult_sentences') || '[]'),
-    savedPassages: JSON.parse(localStorage.getItem('saved_passages') || '[]'),
-    wrongQuestions: JSON.parse(localStorage.getItem('wrong_questions') || '[]')
+    difficultSentences: allDifficultSentences.filter(s => s.userId === currentUserId),
+    savedPassages: allSavedPassages.filter(p => p.userId === currentUserId),
+    wrongQuestions: allWrongQuestions.filter(q => q.userId === currentUserId)
   });
   
   // 다른 사용자들도 추가

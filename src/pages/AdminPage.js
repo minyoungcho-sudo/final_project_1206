@@ -3,9 +3,40 @@ import { getAvailableDates, getUsersByDate, getUserData } from '../utils/adminDa
 export function renderAdminPage() {
   return `
     <div class="admin-layout min-h-screen bg-[#f8fafc] dark:bg-[#0f172a]">
+      <!-- 사이드바 메뉴 -->
+      <div id="sidebar-menu" class="fixed inset-y-0 left-0 z-[60] w-64 bg-white dark:bg-[#1e293b] shadow-sm transform -translate-x-full transition-transform duration-300 ease-in-out border-r border-gray-200 dark:border-gray-800">
+        <div class="flex flex-col h-full">
+          <div class="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-800">
+            <h3 class="text-lg font-black text-[#121417] dark:text-white font-display">메뉴</h3>
+            <button id="close-sidebar-btn" class="icon-btn" aria-label="close">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          <nav class="flex-1 p-4">
+            <ul class="space-y-2">
+              <li>
+                <button id="menu-item-admin-main" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 font-medium">
+                  <span class="material-symbols-outlined">dashboard</span>
+                  <span>사용자 활동 관리</span>
+                </button>
+              </li>
+              <li>
+                <button id="menu-item-admin-community" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                  <span class="material-symbols-outlined">forum</span>
+                  <span>커뮤니티 관리</span>
+                </button>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      
+      <!-- 사이드바 오버레이 -->
+      <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-[55] hidden"></div>
+
       <header class="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#1e293b] shadow-sm h-16">
         <div class="px-4 sm:px-10 h-full flex items-center justify-between">
-          <button class="p-2 text-gray-600 dark:text-gray-300" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
+          <button id="menu-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="menu"><span class="material-symbols-outlined">menu</span></button>
           <h2 class="text-lg font-black text-[#121417] dark:text-white font-display">관리자 페이지</h2>
           <button id="profile-icon-btn" class="p-2 text-gray-600 dark:text-gray-300" aria-label="profile"><span class="material-symbols-outlined">person</span></button>
         </div>
@@ -51,6 +82,48 @@ export function renderAdminPage() {
 }
 
 export function setupAdminPage() {
+  // 메뉴 버튼
+  const menuBtn = document.getElementById('menu-btn');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+      if (window.toggleSidebar) {
+        window.toggleSidebar();
+      }
+    });
+  }
+
+  // 사이드바 메뉴 항목 이벤트
+  const menuItemAdminMain = document.getElementById('menu-item-admin-main');
+  if (menuItemAdminMain) {
+    menuItemAdminMain.addEventListener('click', () => {
+      if (window.toggleSidebar) window.toggleSidebar();
+      if (window.navigateToPage) window.navigateToPage('admin');
+    });
+  }
+
+  const menuItemAdminCommunity = document.getElementById('menu-item-admin-community');
+  if (menuItemAdminCommunity) {
+    menuItemAdminCommunity.addEventListener('click', () => {
+      if (window.toggleSidebar) window.toggleSidebar();
+      if (window.navigateToPage) window.navigateToPage('admin-community');
+    });
+  }
+
+  // 사이드바 닫기
+  const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+  if (closeSidebarBtn) {
+    closeSidebarBtn.addEventListener('click', () => {
+      if (window.toggleSidebar) window.toggleSidebar();
+    });
+  }
+
+  const sidebarOverlay = document.getElementById('sidebar-overlay');
+  if (sidebarOverlay) {
+    sidebarOverlay.addEventListener('click', () => {
+      if (window.toggleSidebar) window.toggleSidebar();
+    });
+  }
+
   // 프로필 아이콘 버튼 이벤트 설정
   setTimeout(() => {
     const profileIconBtn = document.getElementById('profile-icon-btn');
