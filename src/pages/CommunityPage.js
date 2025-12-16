@@ -194,23 +194,32 @@ export function setupCommunityPage() {
       const currentUserId = localStorage.getItem('currentUserId') || 'anonymous';
       const currentUserName = localStorage.getItem('currentUserName') || '익명';
       
-      savePost(title, content, currentUserId, currentUserName);
-      writePostModal.classList.add('hidden');
-      postForm.reset();
-      loadPosts();
+      (async () => {
+        try {
+          await savePost(title, content, currentUserId, currentUserName);
+          writePostModal.classList.add('hidden');
+          postForm.reset();
+          await loadPosts();
+        } catch (error) {
+          console.error('게시글 저장 오류:', error);
+          alert('게시글 저장 중 오류가 발생했습니다.');
+        }
+      })();
     });
   }
 
   // 초기 게시글 로드
-  loadPosts();
+  (async () => {
+    await loadPosts();
+  })();
 }
 
 // 게시글 목록 로드
-function loadPosts() {
+async function loadPosts() {
   const container = document.getElementById('posts-container');
   if (!container) return;
 
-  const posts = getPosts();
+  const posts = await getPosts();
   
   if (posts.length === 0) {
     container.innerHTML = `
@@ -260,17 +269,19 @@ function loadPosts() {
   container.querySelectorAll('[data-post-id]').forEach(element => {
     element.addEventListener('click', () => {
       const postId = element.getAttribute('data-post-id');
-      showPostDetail(postId);
+      (async () => {
+        await showPostDetail(postId);
+      })();
     });
   });
 }
 
 // 게시글 상세보기
-function showPostDetail(postId) {
-  const post = getPostById(postId);
+async function showPostDetail(postId) {
+  const post = await getPostById(postId);
   if (!post) return;
 
-  const comments = getComments(postId);
+  const comments = await getComments(postId);
   const currentUserId = localStorage.getItem('currentUserId');
   
   const date = new Date(post.createdAt);
@@ -367,9 +378,16 @@ function showPostDetail(postId) {
   if (deletePostBtn) {
     deletePostBtn.addEventListener('click', () => {
       if (confirm('정말 이 글을 삭제하시겠습니까?')) {
-        deletePost(postId);
-        document.body.removeChild(modal);
-        loadPosts();
+        (async () => {
+          try {
+            await deletePost(postId);
+            document.body.removeChild(modal);
+            await loadPosts();
+          } catch (error) {
+            console.error('게시글 삭제 오류:', error);
+            alert('게시글 삭제 중 오류가 발생했습니다.');
+          }
+        })();
       }
     });
   }
@@ -396,9 +414,16 @@ function showPostDetail(postId) {
       const commentId = btn.getAttribute('data-comment-id');
       const postId = btn.getAttribute('data-post-id');
       if (confirm('정말 이 댓글을 삭제하시겠습니까?')) {
-        deleteComment(commentId, postId);
-        document.body.removeChild(modal);
-        showPostDetail(postId);
+        (async () => {
+          try {
+            await deleteComment(commentId, postId);
+            document.body.removeChild(modal);
+            await showPostDetail(postId);
+          } catch (error) {
+            console.error('댓글 삭제 오류:', error);
+            alert('댓글 삭제 중 오류가 발생했습니다.');
+          }
+        })();
       }
     });
   });

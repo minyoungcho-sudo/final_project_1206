@@ -112,7 +112,9 @@ export function setupAdminCommunityPage() {
   const showHiddenCheckbox = document.getElementById('show-hidden');
   if (showHiddenCheckbox) {
     showHiddenCheckbox.addEventListener('change', () => {
-      loadPosts(showHiddenCheckbox.checked);
+      (async () => {
+        await loadPosts(showHiddenCheckbox.checked);
+      })();
     });
   }
 
@@ -121,11 +123,11 @@ export function setupAdminCommunityPage() {
 }
 
 // 게시글 목록 로드
-function loadPosts(includeHidden = false) {
+async function loadPosts(includeHidden = false) {
   const container = document.getElementById('posts-container');
   if (!container) return;
 
-  const posts = getPosts(includeHidden);
+  const posts = await getPosts(includeHidden);
   
   if (posts.length === 0) {
     container.innerHTML = `
@@ -194,9 +196,16 @@ function loadPosts(includeHidden = false) {
       const isHidden = btn.getAttribute('data-is-hidden') === 'true';
       
       if (confirm(isHidden ? '이 글을 다시 표시하시겠습니까?' : '이 글을 숨기시겠습니까?')) {
-        togglePostVisibility(postId);
-        const showHiddenCheckbox = document.getElementById('show-hidden');
-        loadPosts(showHiddenCheckbox ? showHiddenCheckbox.checked : false);
+        (async () => {
+          try {
+            await togglePostVisibility(postId);
+            const showHiddenCheckbox = document.getElementById('show-hidden');
+            await loadPosts(showHiddenCheckbox ? showHiddenCheckbox.checked : false);
+          } catch (error) {
+            console.error('게시글 가시성 변경 오류:', error);
+            alert('게시글 가시성 변경 중 오류가 발생했습니다.');
+          }
+        })();
       }
     });
   });
@@ -208,9 +217,16 @@ function loadPosts(includeHidden = false) {
       const postId = btn.getAttribute('data-post-id');
       
       if (confirm('정말 이 글을 삭제하시겠습니까? (댓글도 함께 삭제됩니다)')) {
-        deletePost(postId);
-        const showHiddenCheckbox = document.getElementById('show-hidden');
-        loadPosts(showHiddenCheckbox ? showHiddenCheckbox.checked : false);
+        (async () => {
+          try {
+            await deletePost(postId);
+            const showHiddenCheckbox = document.getElementById('show-hidden');
+            await loadPosts(showHiddenCheckbox ? showHiddenCheckbox.checked : false);
+          } catch (error) {
+            console.error('게시글 삭제 오류:', error);
+            alert('게시글 삭제 중 오류가 발생했습니다.');
+          }
+        })();
       }
     });
   });
