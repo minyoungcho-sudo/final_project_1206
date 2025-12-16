@@ -46,6 +46,10 @@ if (hasFirebaseConfig) {
     // Auth 및 Google Auth Provider 초기화
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
+    // 항상 계정 선택 창이 뜨도록 설정 (이전에 로그인했던 계정으로 자동 로그인되는 것 방지)
+    googleProvider.setCustomParameters({
+      prompt: 'select_account'
+    });
     
     // Firestore 초기화
     db = getFirestore(app);

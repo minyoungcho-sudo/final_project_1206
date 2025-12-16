@@ -141,7 +141,33 @@ export function setupAdminPage() {
   // 날짜 선택 드롭다운 초기화
   const dateSelect = document.getElementById('date-select');
   if (dateSelect) {
-    const availableDates = getAvailableDates();
+    loadAvailableDates();
+
+    // 날짜 변경 이벤트
+    dateSelect.addEventListener('change', async (e) => {
+      const selectedDate = e.target.value;
+      if (selectedDate) {
+        await loadUsersByDate(selectedDate);
+      } else {
+        clearUsersList();
+        clearUserDetail();
+      }
+    });
+  }
+}
+
+// 사용 가능한 날짜 목록 로드
+async function loadAvailableDates() {
+  const dateSelect = document.getElementById('date-select');
+  if (!dateSelect) return;
+  
+  try {
+    const availableDates = await getAvailableDates();
+    
+    // 기존 옵션 제거 (처음 옵션 제외)
+    while (dateSelect.children.length > 1) {
+      dateSelect.removeChild(dateSelect.lastChild);
+    }
     
     // 날짜 옵션 추가
     availableDates.forEach(date => {
@@ -157,74 +183,82 @@ export function setupAdminPage() {
       option.textContent = formattedDate;
       dateSelect.appendChild(option);
     });
-
-    // 날짜 변경 이벤트
-    dateSelect.addEventListener('change', (e) => {
-      const selectedDate = e.target.value;
-      if (selectedDate) {
-        loadUsersByDate(selectedDate);
-      } else {
-        clearUsersList();
-        clearUserDetail();
-      }
-    });
+  } catch (error) {
+    console.error('날짜 목록 로드 실패:', error);
   }
 }
 
 // 날짜별 사용자 목록 로드
-function loadUsersByDate(date) {
-  const users = getUsersByDate(date);
+async function loadUsersByDate(date) {
   const usersListContainer = document.getElementById('users-list');
   
   if (!usersListContainer) return;
 
-  if (users.length === 0) {
+  try {
+    // 로딩 표시
     usersListContainer.innerHTML = `
       <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
-        선택한 날짜에 활동한 사용자가 없습니다.
+        사용자 목록을 불러오는 중...
       </div>
     `;
-    return;
-  }
 
-  usersListContainer.innerHTML = users.map(user => {
-    const totalCount = (user.difficultSentences?.length || 0) + 
-                       (user.savedPassages?.length || 0) + 
-                       (user.wrongQuestions?.length || 0);
-    
-    return `
-      <button 
-        class="user-item w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-        data-user-id="${user.userId}"
-      >
-        <div class="flex items-center justify-between">
-          <div class="flex-1">
-            <div class="font-medium text-gray-900 dark:text-gray-100">${escapeHtml(user.userName)}</div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              어려운 문장: ${user.difficultSentences?.length || 0} | 
-              저장한 지문: ${user.savedPassages?.length || 0} | 
-              틀린 문제: ${user.wrongQuestions?.length || 0}
-            </div>
-          </div>
-          <span class="material-symbols-outlined text-gray-400 text-lg ml-2">chevron_right</span>
+    const users = await getUsersByDate(date);
+
+    if (users.length === 0) {
+      usersListContainer.innerHTML = `
+        <div class="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+          선택한 날짜에 활동한 사용자가 없습니다.
         </div>
-      </button>
-    `;
-  }).join('');
+      `;
+      return;
+    }
 
-  // 사용자 클릭 이벤트 추가
-  usersListContainer.querySelectorAll('.user-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const userId = btn.getAttribute('data-user-id');
-      loadUserDetail(userId, date);
+    usersListContainer.innerHTML = users.map(user => {
+      const totalCount = (user.difficultSentences?.length || 0) + 
+                         (user.savedPassages?.length || 0) + 
+                         (user.wrongQuestions?.length || 0);
       
-      // 선택된 항목 스타일 적용
-      usersListContainer.querySelectorAll('.user-item').forEach(item => {
-        item.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'border-blue-300', 'dark:border-blue-700');
+      return `
+        <button 
+          class="user-item w-full text-left p-3 rounded-lg border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          data-user-id="${user.userId}"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex-1">
+              <div class="font-medium text-gray-900 dark:text-gray-100">${escapeHtml(user.userName)}</div>
+              <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                어려운 문장: ${user.difficultSentences?.length || 0} | 
+                저장한 지문: ${user.savedPassages?.length || 0} | 
+                틀린 문제: ${user.wrongQuestions?.length || 0}
+              </div>
+            </div>
+            <span class="material-symbols-outlined text-gray-400 text-lg ml-2">chevron_right</span>
+          </div>
+        </button>
+      `;
+    }).join('');
+
+    // 사용자 클릭 이벤트 추가
+    usersListContainer.querySelectorAll('.user-item').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const userId = btn.getAttribute('data-user-id');
+        await loadUserDetail(userId, date);
+        
+        // 선택된 항목 스타일 적용
+        usersListContainer.querySelectorAll('.user-item').forEach(item => {
+          item.classList.remove('bg-blue-50', 'dark:bg-blue-900/20', 'border-blue-300', 'dark:border-blue-700');
+        });
+        btn.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'border-blue-300', 'dark:border-blue-700');
       });
-      btn.classList.add('bg-blue-50', 'dark:bg-blue-900/20', 'border-blue-300', 'dark:border-blue-700');
     });
-  });
+  } catch (error) {
+    console.error('사용자 목록 로드 실패:', error);
+    usersListContainer.innerHTML = `
+      <div class="text-center py-8 text-red-500 dark:text-red-400 text-sm">
+        사용자 목록을 불러오는 데 실패했습니다.
+      </div>
+    `;
+  }
 }
 
 // 사용자 목록 초기화
@@ -240,11 +274,31 @@ function clearUsersList() {
 }
 
 // 사용자 상세 정보 로드
-function loadUserDetail(userId, date) {
-  const userData = getUserData(userId);
+async function loadUserDetail(userId, date) {
   const container = document.getElementById('user-detail-container');
   
-  if (!container || !userData) return;
+  if (!container) return;
+
+  try {
+    // 로딩 표시
+    container.innerHTML = `
+      <div class="text-center py-16">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-gray-500 dark:text-gray-400">사용자 정보를 불러오는 중...</p>
+      </div>
+    `;
+
+    const userData = await getUserData(userId);
+  
+    if (!userData) {
+      container.innerHTML = `
+        <div class="text-center py-16">
+          <span class="material-symbols-outlined text-gray-400 text-6xl mb-4">error</span>
+          <p class="text-gray-500 dark:text-gray-400 text-lg mb-2">사용자 데이터를 찾을 수 없습니다.</p>
+        </div>
+      `;
+      return;
+    }
 
   // 선택한 날짜의 데이터만 필터링
   const filterByDate = (items) => {
@@ -369,6 +423,15 @@ function loadUserDetail(userId, date) {
       ` : ''}
     </div>
   `;
+  } catch (error) {
+    console.error('사용자 상세 정보 로드 실패:', error);
+    container.innerHTML = `
+      <div class="text-center py-16">
+        <span class="material-symbols-outlined text-red-400 text-6xl mb-4">error</span>
+        <p class="text-red-500 dark:text-red-400 text-lg mb-2">사용자 정보를 불러오는 데 실패했습니다.</p>
+      </div>
+    `;
+  }
 }
 
 // 사용자 상세 정보 초기화

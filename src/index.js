@@ -110,6 +110,19 @@ async function handleGoogleLogin() {
       console.log('관리자 권한 확인 결과:', isAdmin);
       
       if (!isAdmin) {
+        // 관리자 권한이 없는 경우 현재 세션을 정리하고 다시 로그인할 수 있도록 처리
+        try {
+          if (auth) {
+            await signOut(auth);
+          }
+        } catch (signOutError) {
+          console.error('관리자 권한 없음 처리 중 로그아웃 실패:', signOutError);
+        }
+        
+        currentUser = null;
+        userRole = 'student';
+        localStorage.removeItem('userRole');
+        
         // 로그인 상태 메시지 숨기기
         if (loginStatus) {
           loginStatus.style.display = 'none';
