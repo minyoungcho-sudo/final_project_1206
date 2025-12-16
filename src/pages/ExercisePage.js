@@ -454,8 +454,8 @@ async function generateNewQuestion(category = null) {
       answerButtonContainer.style.display = 'flex';
       const checkAnswerBtn = document.getElementById('check-answer-btn');
       if (checkAnswerBtn) {
-        checkAnswerBtn.onclick = () => {
-          showExplanation(exercise);
+        checkAnswerBtn.onclick = async () => {
+          await showExplanation(exercise);
         };
       }
     }
@@ -504,7 +504,7 @@ function selectOption(selectedOption, correctAnswer) {
 }
 
 // 해설 표시
-function showExplanation(exercise) {
+async function showExplanation(exercise) {
   if (!exercise) return;
 
   const explanationCard = document.getElementById('explanation-card');
@@ -520,7 +520,7 @@ function showExplanation(exercise) {
   // 틀린 문제인 경우 자동 저장
   if (selectedOption && selectedOption !== exercise.correctAnswer) {
     try {
-      saveWrongQuestion(
+      await saveWrongQuestion(
         exercise,
         selectedOption,
         exercise.correctAnswer,

@@ -123,10 +123,37 @@ async function handleGoogleLogin() {
       }
     }
     
-    // 로컬 스토리지에 역할 및 사용자 정보 저장
+    // 로컬 스토리지에 역할 및 사용자 정보 저장 (역할만 저장)
     localStorage.setItem('userRole', userRole);
     localStorage.setItem('currentUserId', result.user.uid);
     localStorage.setItem('currentUserName', result.user.displayName || result.user.email || '사용자');
+    
+    // Firestore에서 사용자 문서 생성/업데이트
+    try {
+      const { db } = await import('./firebaseConfig.js');
+      const { doc, setDoc, updateDoc, serverTimestamp } = await import('firebase/firestore');
+      if (db) {
+        const userRef = doc(db, 'users', result.user.uid);
+        await updateDoc(userRef, {
+          userId: result.user.uid,
+          userName: result.user.displayName || result.user.email || '사용자',
+          lastAccess: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        }).catch(async (error) => {
+          if (error.code === 'not-found') {
+            await setDoc(userRef, {
+              userId: result.user.uid,
+              userName: result.user.displayName || result.user.email || '사용자',
+              lastAccess: serverTimestamp(),
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Firestore 사용자 문서 업데이트 실패:', error);
+    }
     
     if (loginStatus && loginStatusContent) {
       loginStatusContent.innerHTML = `

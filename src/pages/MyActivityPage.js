@@ -214,7 +214,9 @@ export function setupMyActivityPage() {
         }
 
         // 콘텐츠 로드
-        loadTabContent(tab);
+        (async () => {
+          await loadTabContent(tab);
+        })();
       });
     }
   });
@@ -292,20 +294,19 @@ export function setupMyActivityPage() {
   }
 
   // 초기 로드
-  loadTabContent('difficult');
-  
-  // 학생 정보 로드
-  loadStudentInfo();
-  
-  // 마지막 접속 시간 업데이트
-  updateLastAccess();
+  (async () => {
+    await loadStudentInfo();
+    await updateLastAccess();
+    await loadTabContent('difficult');
+  })();
 }
 
 // 학생 정보 로드
-function loadStudentInfo() {
-  const studentName = localStorage.getItem('currentUserName') || '사용자';
-  const lastAccess = getLastAccess();
-  const continuousDays = getContinuousDays();
+async function loadStudentInfo() {
+  const currentUser = window.currentUser ? window.currentUser() : null;
+  const studentName = currentUser?.displayName || currentUser?.email || localStorage.getItem('currentUserName') || '사용자';
+  const lastAccess = await getLastAccess();
+  const continuousDays = await getContinuousDays();
   
   // 마지막 접속 시간 포맷팅
   let timeText = '기록 없음';
@@ -365,25 +366,25 @@ function loadStudentInfo() {
   if (continuousDaysMobileEl) continuousDaysMobileEl.textContent = daysText;
 }
 
-function loadTabContent(tab) {
+async function loadTabContent(tab) {
   switch (tab) {
     case 'difficult':
-      loadDifficultSentences();
+      await loadDifficultSentences();
       break;
     case 'passages':
-      loadSavedPassages();
+      await loadSavedPassages();
       break;
     case 'wrong':
-      loadWrongQuestions();
+      await loadWrongQuestions();
       break;
   }
 }
 
-function loadDifficultSentences() {
+async function loadDifficultSentences() {
   const container = document.getElementById('difficult-sentences-list');
   if (!container) return;
 
-  const sentences = getDifficultSentences();
+  const sentences = await getDifficultSentences();
   
   if (sentences.length === 0) {
     container.innerHTML = `
@@ -423,11 +424,11 @@ function loadDifficultSentences() {
   });
 }
 
-function loadSavedPassages() {
+async function loadSavedPassages() {
   const container = document.getElementById('saved-passages-list');
   if (!container) return;
 
-  const passages = getSavedPassages();
+  const passages = await getSavedPassages();
   
   if (passages.length === 0) {
     container.innerHTML = `
@@ -463,21 +464,26 @@ function loadSavedPassages() {
 
   // 삭제 버튼 이벤트
   container.querySelectorAll('.delete-passage-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
       if (confirm('이 지문을 삭제하시겠습니까?')) {
-        deleteSavedPassage(id);
-        loadSavedPassages();
+        try {
+          await deleteSavedPassage(id);
+          await loadSavedPassages();
+        } catch (error) {
+          console.error('지문 삭제 오류:', error);
+          alert('삭제 중 오류가 발생했습니다.');
+        }
       }
     });
   });
 }
 
-function loadWrongQuestions() {
+async function loadWrongQuestions() {
   const container = document.getElementById('wrong-questions-list');
   if (!container) return;
 
-  const questions = getWrongQuestions();
+  const questions = await getWrongQuestions();
   
   if (questions.length === 0) {
     container.innerHTML = `
@@ -528,11 +534,16 @@ function loadWrongQuestions() {
 
   // 삭제 버튼 이벤트
   container.querySelectorAll('.delete-question-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const id = btn.getAttribute('data-id');
       if (confirm('이 문제를 삭제하시겠습니까?')) {
-        deleteWrongQuestion(id);
-        loadWrongQuestions();
+        try {
+          await deleteWrongQuestion(id);
+          await loadWrongQuestions();
+        } catch (error) {
+          console.error('문제 삭제 오류:', error);
+          alert('삭제 중 오류가 발생했습니다.');
+        }
       }
     });
   });

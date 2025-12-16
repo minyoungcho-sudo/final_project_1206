@@ -431,17 +431,18 @@ export async function setupAnalysisPage() {
 }
 
 // 저장 버튼 이벤트 설정
-function setupSaveButtons(sentences) {
+async function setupSaveButtons(sentences) {
   // 모든 저장 버튼에 이벤트 리스너 추가 (한 번만)
-  document.querySelectorAll('.save-sentence-btn').forEach(btn => {
-    // 이미 이벤트 리스너가 있는지 확인
+  const buttons = document.querySelectorAll('.save-sentence-btn');
+  
+  // 모든 버튼의 상태를 먼저 확인
+  for (const btn of buttons) {
     if (btn.hasAttribute('data-listener-attached')) {
-      return;
+      continue;
     }
     
-    // 페이지 로드 시 이미 저장된 문장인지 확인
     const index = parseInt(btn.getAttribute('data-sentence-index'));
-    checkAndUpdateButtonState(btn, index);
+    await checkAndUpdateButtonState(btn, index);
     
     btn.setAttribute('data-listener-attached', 'true');
     
@@ -491,8 +492,9 @@ function setupSaveButtons(sentences) {
       
       if (isSaved && savedId) {
         // 저장 취소 (삭제)
-        try {
-          deleteDifficultSentence(savedId);
+        (async () => {
+          try {
+            await deleteDifficultSentence(savedId);
           
           // 버튼 상태 변경 - 테두리 형태로 변경
           btn.innerHTML = '<span class="material-symbols-outlined">bookmark_border</span>';
@@ -505,16 +507,18 @@ function setupSaveButtons(sentences) {
           btn.removeAttribute('data-saved');
           btn.removeAttribute('data-saved-id');
           
-          // 토스트 메시지 표시
-          showToast('저장이 취소되었습니다.');
-        } catch (error) {
-          console.error('문장 삭제 오류:', error);
-          showToast('삭제 중 오류가 발생했습니다.');
-        }
+            // 토스트 메시지 표시
+            showToast('저장이 취소되었습니다.');
+          } catch (error) {
+            console.error('문장 삭제 오류:', error);
+            showToast('삭제 중 오류가 발생했습니다.');
+          }
+        })();
       } else {
         // 저장하기
-        try {
-          const savedEntry = saveDifficultSentence(sentenceText, analysis, translation);
+        (async () => {
+          try {
+            const savedEntry = await saveDifficultSentence(sentenceText, analysis, translation);
           
           // 버튼 상태 변경 - 책갈피 아이콘을 채워진 형태로 변경
           // innerHTML로 직접 변경하여 확실하게 적용
@@ -528,19 +532,20 @@ function setupSaveButtons(sentences) {
           btn.setAttribute('data-saved', 'true');
           btn.setAttribute('data-saved-id', savedEntry.id);
           
-          // 토스트 메시지 표시
-          showToast('어려운 문장으로 저장되었습니다.');
-        } catch (error) {
-          console.error('문장 저장 오류:', error);
-          showToast('저장 중 오류가 발생했습니다.');
-        }
+            // 토스트 메시지 표시
+            showToast('어려운 문장으로 저장되었습니다.');
+          } catch (error) {
+            console.error('문장 저장 오류:', error);
+            showToast('저장 중 오류가 발생했습니다.');
+          }
+        })();
       }
     });
-  });
+  }
 }
 
 // 페이지 로드 시 버튼 상태 확인 및 업데이트
-function checkAndUpdateButtonState(btn, index) {
+async function checkAndUpdateButtonState(btn, index) {
   // 문장 텍스트 가져오기
   let sentenceText = '';
   const sentenceElement = document.getElementById(`sentence-original-${index}`);
@@ -554,7 +559,7 @@ function checkAndUpdateButtonState(btn, index) {
   
   if (sentenceText) {
     // 저장된 문장 목록에서 찾기
-    const savedSentences = getDifficultSentences();
+    const savedSentences = await getDifficultSentences();
     const savedSentence = savedSentences.find(s => s.sentence === sentenceText);
     
       if (savedSentence) {

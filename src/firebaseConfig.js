@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // 환경변수에서 Firebase 설정값 불러오기
 const firebaseConfig = {
@@ -35,6 +36,7 @@ const hasFirebaseConfig = firebaseConfig.apiKey &&
 let app = null;
 let auth = null;
 let googleProvider = null;
+let db = null;
 
 if (hasFirebaseConfig) {
   try {
@@ -45,7 +47,11 @@ if (hasFirebaseConfig) {
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
     
+    // Firestore 초기화
+    db = getFirestore(app);
+    
     console.log('Firebase 초기화 성공');
+    console.log('Firestore 초기화:', !!db);
   } catch (error) {
     console.error('Firebase 초기화 오류:', error);
   }
@@ -94,5 +100,5 @@ export function isAdminUser(userId) {
   return adminUidList.includes(userId);
 }
 
-export { auth, googleProvider };
+export { auth, googleProvider, db };
 export default app;

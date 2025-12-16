@@ -299,21 +299,31 @@ export async function setupContentAnalysisPage() {
   const savePassageBtn = document.getElementById('save-passage-btn');
   if (savePassageBtn) {
     // 현재 지문이 이미 저장되어 있는지 확인
-    const text = window.appState?.inputText || '';
-    const savedPassages = getSavedPassages();
-    const existingPassage = savedPassages.find(p => p.passage === text);
+    (async () => {
+      const text = window.appState?.inputText || '';
+      const savedPassages = await getSavedPassages();
+      const existingPassage = savedPassages.find(p => p.passage === text);
     
-    if (existingPassage) {
-      // 이미 저장된 경우
-      savePassageBtn.innerHTML = `
-        <span class="material-symbols-outlined text-[20px]">bookmark</span>
-        <span>저장 취소</span>
-      `;
-      savePassageBtn.setAttribute('data-saved-id', existingPassage.id);
-      savePassageBtn.setAttribute('data-saved', 'true');
-    }
+      if (existingPassage) {
+        // 이미 저장된 경우
+        savePassageBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px]">bookmark</span>
+          <span>저장 취소</span>
+        `;
+        savePassageBtn.setAttribute('data-saved-id', existingPassage.id);
+        savePassageBtn.setAttribute('data-saved', 'true');
+      } else {
+        // 저장되지 않은 경우
+        savePassageBtn.innerHTML = `
+          <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+          <span>지문 저장</span>
+        `;
+        savePassageBtn.removeAttribute('data-saved-id');
+        savePassageBtn.removeAttribute('data-saved');
+      }
+    })();
     
-    savePassageBtn.addEventListener('click', () => {
+    savePassageBtn.addEventListener('click', async () => {
       const text = window.appState?.inputText || '';
       if (!text) {
         alert('저장할 지문이 없습니다.');
@@ -326,27 +336,37 @@ export async function setupContentAnalysisPage() {
         // 저장 취소 (삭제)
         const savedId = savePassageBtn.getAttribute('data-saved-id');
         if (savedId) {
-          deleteSavedPassage(savedId);
-          savePassageBtn.innerHTML = `
-            <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
-            <span>지문 저장</span>
-          `;
-          savePassageBtn.removeAttribute('data-saved-id');
-          savePassageBtn.removeAttribute('data-saved');
-          showToast('지문 저장이 취소되었습니다.');
+          try {
+            await deleteSavedPassage(savedId);
+            savePassageBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[20px]">bookmark_add</span>
+              <span>지문 저장</span>
+            `;
+            savePassageBtn.removeAttribute('data-saved-id');
+            savePassageBtn.removeAttribute('data-saved');
+            showToast('지문 저장이 취소되었습니다.');
+          } catch (error) {
+            console.error('지문 삭제 오류:', error);
+            showToast('삭제 중 오류가 발생했습니다.');
+          }
         }
       } else {
         // 저장하기
         const contentAnalysis = window.contentAnalysisData;
         if (contentAnalysis) {
-          const savedEntry = savePassage(text, contentAnalysis);
-          savePassageBtn.innerHTML = `
-            <span class="material-symbols-outlined text-[20px]">bookmark</span>
-            <span>저장 취소</span>
-          `;
-          savePassageBtn.setAttribute('data-saved-id', savedEntry.id);
-          savePassageBtn.setAttribute('data-saved', 'true');
-          showToast('지문이 저장되었습니다.');
+          try {
+            const savedEntry = await savePassage(text, contentAnalysis);
+            savePassageBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[20px]">bookmark</span>
+              <span>저장 취소</span>
+            `;
+            savePassageBtn.setAttribute('data-saved-id', savedEntry.id);
+            savePassageBtn.setAttribute('data-saved', 'true');
+            showToast('지문이 저장되었습니다.');
+          } catch (error) {
+            console.error('지문 저장 오류:', error);
+            showToast('저장 중 오류가 발생했습니다.');
+          }
         } else {
           alert('분석이 완료된 후 저장할 수 있습니다.');
         }
